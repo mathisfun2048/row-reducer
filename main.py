@@ -1,11 +1,12 @@
 # Input: space = same row
 
 def get_matrix():
+    print("Enter The following numbers: ")
     num_rows = int(input("number of rows: "))
     num_cols = int(input("number of cols: "))
     matrix = []
 
-    print("enter row by row, space seperated: \n")
+    print("enter row by row, space seperated:")
     for _ in range(num_rows):
         r = list(map(float, input(f"Row {_+1}: ").split()))
         if len(r) != num_cols:
