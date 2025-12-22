@@ -95,9 +95,13 @@ def qr(matrix):
             v = [v[k] - R[j][i] * Q_T[j][k] for k in range(num_rows)]
 
         R[i][i] = magnitude(v)
-        Q.append([v[k] / R[i][i]] for k in range(num_rows))
 
-    Q = [[Q[i][j] for i in range(num_cols)] for i in range(num_rows)]
+        if abs(R[i][i]) < 1e-10:
+            raise ValueError("Matrix is rank deficient")
+
+        Q_T.append([v[k] / R[i][i] for k in range(num_rows)])
+
+    Q = [[Q_T[i][j] for i in range(num_cols)] for j in range(num_rows)]
     
     return Q, R
 
