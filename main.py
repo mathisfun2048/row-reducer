@@ -15,36 +15,37 @@ def get_matrix():
     return matrix
 
 def rref(matrix):
-    copy = [row[:] for row in matrix]
-    num_rows = len(copy)
-    num_cols = len(copy[0])
+    A = [row[:] for row in matrix]
+    num_rows = len(A)
+    num_cols = len(A[0])
 
     current_row = 0
 
     for c in range(num_cols):
         pivot_row = None
         for r in range(current_row, num_rows):
-            if abs(copy[r][c]) > 1e-10:
+            if abs(A[r][c]) > 1e-10:
                 pivot_row = r
                 break
-            if pivot_row is None:
-                continue
+        
+        if pivot_row is None:
+            continue
 
-        copy[current_row], copy[pivot_row] = copy[pivot_row], copy[current_row]
+        A[current_row], A[pivot_row] = A[pivot_row], A[current_row]
 
-        pivot = copy[current_row][c]
-        copy[current_row] = [x / pivot for x in copy[current_row]]
+        pivot = A[current_row][c]
+        A[current_row] = [x / pivot for x in A[current_row]]
 
         for r in range(num_rows):
             if r != current_row:
-                factor = copy[r][c]
-                copy[r] = [copy[r][i] - factor * copy[current_row][i] for i in range(num_cols)]
+                factor = A[r][c]
+                A[r] = [A[r][i] - factor * A[current_row][i] for i in range(num_cols)]
 
         current_row += 1
         if current_row >= num_rows:
             break
 
-    return copy
+    return A
 
 
 if __name__ == "__main__":
