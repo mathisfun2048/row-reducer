@@ -73,6 +73,37 @@ def lu(matrix):
 
     return L, U
 
+def dot_product(v1, v2):
+    return sum(a*b for a, b in zip(v1, v2))
+
+def magnitude(v):
+    return sum(x**2 for x in v) ** 0.5
+
+def qr(matrix):
+    A = [row[:] for row in matrix]
+    num_rows = len(A)
+    num_cols = len(A[0])
+    
+    A_T = [[A[i][j] for i in range(num_rows)] for j in range(num_cols)]
+    Q_T = []
+    R = [[0.0] * num_cols for _ in range(num_cols)]
+
+    for i in range(num_cols):
+        v = A_T[i][:]
+        for j in range(i):
+            R[j][i] = dot_product(Q_T[j], A_T[i])
+            v = [v[k] - R[j][i] * Q_T[j][k] for k in range(num_rows)]
+
+        R[i][i] = magnitude(v)
+        Q.append([v[k] / R[i][i]] for k in range(num_rows))
+
+    Q = [[Q[i][j] for i in range(num_cols)] for i in range(num_rows)]
+    
+    return Q, R
+
+
+
+
 def rref_printer():
     matrix = get_matrix()
     result = rref(matrix)
@@ -93,5 +124,18 @@ def lu_printer():
     for row in U:
         print([round(x, 6) for x in row])
 
+
+def qr_printer():
+    matrix = get_matrix()
+    Q, R = qr(matrix)
+
+    print("Q: ")
+    for row in Q:
+        print([round(x, 6) for x in row])
+
+    print("R: ")
+    for row in R:
+        print([round(x, 6) for x in row])
+
 if __name__ == "__main__":
-   lu_printer()
+   qr_printer()
