@@ -1,4 +1,3 @@
-# Input: space = same row
 
 def get_matrix():
     print("Enter The following numbers: ")
@@ -48,11 +47,40 @@ def rref(matrix):
 
     return A
 
+def lu(matrix):
+    A = [row[:] for row in matrix]
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
+    if num_rows != num_cols:
+        raise ValueError("matrix must be square")
+    
+    L = [[0.0] * num_cols for _ in range (num_rows)]
+    U = [[0.0] * num_cols for _ in range(num_rows) ]
 
-if __name__ == "__main__":
+    for i in range(num_rows):
+
+        for j in range(i, num_rows):
+        
+            sum_val = sum(L[i][k] * U[k][j] for j in range(i))
+            U[i][j] = A[i][j] - sum_val
+
+        for j in range(i, num_rows):
+            if i == j:
+                L[i][j] = 1.0
+            else:
+                sum_val = sum(L[j][k] * U[k][i] for k in range(i))
+                L[j][i] = (A[j][i] - sum_val) / U[i][i]
+
+    return L, U
+
+def rref_printer():
     matrix = get_matrix()
     result = rref(matrix)
 
     print("rref: ")
     for row in result:
         print([round(x, 6) for x in row])
+
+
+if __name__ == "__main__":
+   rref_printer()
