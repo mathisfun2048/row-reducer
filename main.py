@@ -61,7 +61,7 @@ def lu(matrix):
 
         for j in range(i, num_rows):
         
-            sum_val = sum(L[i][k] * U[k][j] for j in range(i))
+            sum_val = sum(L[i][k] * U[k][j] for k in range(i))
             U[i][j] = A[i][j] - sum_val
 
         for j in range(i, num_rows):
@@ -81,6 +81,17 @@ def rref_printer():
     for row in result:
         print([round(x, 6) for x in row])
 
+def lu_printer():
+    matrix = get_matrix()
+    L, U = lu(matrix)
+
+    print("L: ")
+    for row in L:
+        print([round(x, 6) for x in row])
+
+    print("U: ")
+    for row in U:
+        print([round(x, 6) for x in row])
 
 if __name__ == "__main__":
-   rref_printer()
+   lu_printer()
