@@ -105,6 +105,152 @@ def qr(matrix):
     
     return Q, R
 
+def inverse(matrix):
+    A = [row[:] for row in matrix]
+    num_rows = len(A)
+
+    augment = [matrix[i][:] + [1 if i == j else 0 for j in range(num_rows)] for i in range(num_rows)]
+
+    for i in range(num_rows):
+        pivot = augment[i][i]
+        if abs(pivot) < 1e-10:
+            raise ValueError("matrix is signular")
+        
+        for j in range(2 * num_rows):
+            augment[i][j] /= pivot
+        
+        for k in range(num_rows):
+            if k != i:
+                factor = augment[k][i]
+                for j in range (2 * num_rows):
+                    augment[k][j] -= factor * augment [i][j]
+    
+    return [[augment[i][j] for j in range(num_rows, 2 * num_rows)] for i in range(num_rows)]
+
+def det(matrix):
+    A = [row[:] for row in matrix]
+    num_rows = len(A)
+
+    det = 1.0
+
+    for i in range(num_rows):
+        if abs(A[i][i]) < 1e-10:
+            return 0.0
+        
+        for j in range(i + 1, num_rows):
+            factor = A[j][i] / A[i][i]
+            for k in range(i, num_rows):
+                A[j][k] -= factor * A[i][k]
+        
+        det *= A[i][i]
+
+def matrix_times_vector(A, v):
+    return [sum(A[i][j] * v[j] for j in range(len(v))) for i in range(len(A))]
+
+def matrix_mult(A, B):
+    num_rows_A = len(A)
+    num_cols_A = len(A[0])
+    num_rows_B = len(B)
+    num_cols_B = len(B[0])
+
+    if(num_cols_A != num_rows_B):
+        raise ValueError("matricies not multiplicable")
+    
+    product = [[0.0]* num_cols_B for _ in range(num_rows_A)]
+
+    for i in range(num_rows_A):
+        for j in range(num_cols_B):
+            product[i][j] = sum(A[i][k] * B[k][j] for k in range(num_cols_A))
+
+    return product
+
+def solve_system(A, b):
+    num_rows = len(A)
+
+    L, U = lu(A)
+
+    y = [0.0] * num_rows
+    for i in range(num_rows):
+        y[i] = b[i] - sum(L[i][j] * y[j] for j in range(i))
+    
+    x = [0.0] * num_rows
+    for i in range(num_rows - 1, -1, -1):
+        x[i] = (y[i] - sum(U[i][j] * x[j] for j in range(i+1, num_rows))) / U[i][i]
+
+    return x
+
+def find_eigenvector(matrix, eigenvalue, tol = 1e-10):
+    A = [row[:] for row in matrix]
+    num_rows = len(A)
+
+    for i in range(num_rows):
+        A[i][i] -= eigenvalue
+
+    v = [1.0] * num_rows
+    v[0] = 1.5
+
+    for _ in range(100):
+        try:
+            w = solve_system(A, v)
+        except:
+            w = matrix_times_vector(matrix, v)
+    
+        norm = magnitude(w)
+        w = [x / norm for x in w]
+
+        if magnitude([w[i] - v[i] for i in range(num_rows)]) < tol:
+            break
+        v = w
+
+    return v
+
+def qr_algorithm(matrix, max_iter = 1000, tol = 1e-10):
+    A = [row[:] for row in matrix]
+    num_rows = len(A)
+
+    for _ in range(max_iter):
+        Q, R = qr(A)
+        A_new = matrix_mult(R, Q)
+
+        converged = True
+        for i in range(num_rows):
+            for j in range(num_rows):
+                if i != j and abs(A_new[i][j]) > tol:
+                    converged = False
+        
+        if converged:
+            break
+        A = A_new
+
+    return [A[i][i] for i in range(num_rows)]
+
+def diagonalize(matrix):
+
+    A = [row[:] for row in matrix]
+    num_rows = len(A)
+
+    eigenvalues = qr_algorithm(A)
+
+    eigenvectors = []
+
+    for lam in eigenvalues:
+        v = find_eigenvector(A, lam)
+        eigenvectors.append(v)
+    
+    P = [[eigenvectors[j][i] for j in range(num_rows)] for i in range(num_rows)]
+
+    if abs(det(P)) < 1e-10:
+        raise ValueError("matrix not diagonalizable :p")
+    
+    D = [[0.0] * num_rows for _ in range(num_rows)]
+    for i in range(num_rows):
+        D[i][i] = eigenvalues[i]
+    
+    P_inv = inverse(P)
+
+    return P, D, P_inv
+
+        
 
 
 
@@ -127,7 +273,6 @@ def lu_printer():
     print("U: ")
     for row in U:
         print([round(x, 6) for x in row])
-
 
 def qr_printer():
     matrix = get_matrix()
