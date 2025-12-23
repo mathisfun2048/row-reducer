@@ -23,3 +23,4 @@ LU Factorization:
 ## Hour 3
 
 Wrote all the methods for diagonalization, now time to test and write printer functions!
+<img width="447" height="299" alt="Screenshot 2025-12-22 at 8 02 37 PM" src="https://github.com/user-attachments/assets/4fb44238-103f-499b-b740-47c9f8317c4f" />
