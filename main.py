@@ -78,11 +78,9 @@ def lu(matrix):
 
     return L, U
 
-# takes in 2 vectors as col vectors
 def dot_product(v1, v2):
     return sum(a*b for a, b in zip(v1, v2))
 
-# takes in 1 vector as a row vector
 def magnitude(v):
     return sum(x**2 for x in v) ** 0.5
 
@@ -154,7 +152,12 @@ def det(matrix):
     return det
 
 def matrix_times_vector(A, v):
-    return [sum(A[i][j] * v[j] for j in range(len(v))) for i in range(len(A))]
+    num_rows = len(A)
+    product = []
+    for _ in range(num_rows):
+        product.append(dot_product(A[_], v))
+    
+    return product
 
 def matrix_mult(A, B):
     num_rows_A = len(A)
@@ -174,6 +177,14 @@ def matrix_mult(A, B):
     return product
 
 def solve_system(A, b):
+    
+    A_inv = inverse(A)
+
+    x = matrix_times_vector(A_inv, b)
+
+    return x
+
+    """
     num_rows = len(A)
 
     L, U = lu(A)
@@ -187,6 +198,8 @@ def solve_system(A, b):
         x[i] = (y[i] - sum(U[i][j] * x[j] for j in range(i+1, num_rows))) / U[i][i]
 
     return x
+    """
+    
 
 """
 def find_eigenvector(matrix, eigenvalue, tol=1e-10):
@@ -341,7 +354,11 @@ def det_printer():
 
 def matrix_times_vector_printer():
     v = get_vector()
-    print(v)
+    matrix = get_matrix()
+
+    product = matrix_times_vector(matrix, v)
+
+    print(product)
 """
 def diagonal_printer():
     matrix = get_matrix()
@@ -368,7 +385,25 @@ def diagonal_printer():
     for row in test:
         print([round(x, 6) for x in row])
 """
+def matrix_mult_printer():
+    print("You will input 2 matricies")
+    m1 = get_matrix()
+    m2 = get_matrix()
 
+    product = matrix_mult(m1, m2)
 
+    for row in product:
+        print([round(x, 6) for x in row])
+
+def solve_system_printer():
+    print("you will enter a vector and a matrix")
+
+    v = get_vector()
+    m = get_matrix()
+
+    x = solve_system(m, v)
+
+    print(x)
 if __name__ == "__main__":
-   magnitude_printer()
+   solve_system_printer()
+
