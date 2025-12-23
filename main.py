@@ -144,6 +144,8 @@ def det(matrix):
         
         det *= A[i][i]
 
+    return det
+
 def matrix_times_vector(A, v):
     return [sum(A[i][j] * v[j] for j in range(len(v))) for i in range(len(A))]
 
@@ -179,30 +181,39 @@ def solve_system(A, b):
 
     return x
 
-def find_eigenvector(matrix, eigenvalue, tol = 1e-10):
+"""
+def find_eigenvector(matrix, eigenvalue, tol=1e-10):
+    num_rows = len(matrix)
+    
+    # Form (A - λI)
     A = [row[:] for row in matrix]
-    num_rows = len(A)
-
     for i in range(num_rows):
         A[i][i] -= eigenvalue
-
-    v = [1.0] * num_rows
-    v[0] = 1.5
-
-    for _ in range(100):
-        try:
-            w = solve_system(A, v)
-        except:
-            w = matrix_times_vector(matrix, v)
     
-        norm = magnitude(w)
-        w = [x / norm for x in w]
-
-        if magnitude([w[i] - v[i] for i in range(num_rows)]) < tol:
-            break
-        v = w
-
-    return v
+    # Use your existing rref function
+    A = rref(A)
+    
+    # Find free variable (first column without leading 1)
+    pivot_cols = []
+    for i in range(num_rows):
+        for j in range(num_rows):
+            if abs(A[i][j]) > tol:
+                pivot_cols.append(j)
+                break
+    
+    free_var = next((j for j in range(num_rows) if j not in pivot_cols), num_rows - 1)
+    
+    # Build eigenvector
+    v = [0.0] * num_rows
+    v[free_var] = 1.0
+    
+    # Back-substitute (now works because RREF has zeros above pivots)
+    for i in range(len(pivot_cols) - 1, -1, -1):
+        col = pivot_cols[i]
+        v[col] = -sum(A[i][j] * v[j] for j in range(col + 1, num_rows))
+    
+    norm = magnitude(v)
+    return [x / norm for x in v] if norm > tol else v
 
 def qr_algorithm(matrix, max_iter = 1000, tol = 1e-10):
     A = [row[:] for row in matrix]
@@ -249,9 +260,7 @@ def diagonalize(matrix):
     P_inv = inverse(P)
 
     return P, D, P_inv
-
-        
-
+"""
 
 
 def rref_printer():
@@ -286,5 +295,51 @@ def qr_printer():
     for row in R:
         print([round(x, 6) for x in row])
 
+def dot_product_printer():
+    matrix = get_matrix()
+
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
+
+
+    if num_cols != 2:
+        raise ValueError("not 2 col vectors")
+
+    vectors = list(zip(*matrix))
+
+    v1, v2 = vectors[0], vectors[1]
+
+    product = dot_product(v1, v2)
+
+    print(f"the dot product of {v1} and {v2} is {product}")
+
+"""
+def diagonal_printer():
+    matrix = get_matrix()
+    P, D, P_inv = diagonalize(matrix)
+
+    print("P: ")
+    for row in P:
+        print([round(x, 6) for x in row])
+
+    print("D: ")
+    for row in D:
+        print([round(x, 6) for x in row])
+
+    print("P_inv: ")
+    for row in P_inv:
+        print([round(x, 6) for x in row])
+
+    
+
+    print("/n")
+    print("/n")
+
+    test = matrix_mult( matrix_mult(P, D), P_inv)
+    for row in test:
+        print([round(x, 6) for x in row])
+"""
+
+
 if __name__ == "__main__":
-   qr_printer()
+   dot_product_printer()
