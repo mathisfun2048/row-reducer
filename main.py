@@ -330,8 +330,12 @@ def eigenvector(matrix, eigenvalue):
     
     # print("A - λI:", A_shifted)
     
+    """
     basis = null_space(A_shifted)
     return basis[0] if basis else [0.0] * n
+    """
+
+    return null_space(A_shifted)
 
 def eigenvectors(matrix):
     eigenvals = eigenvalues(matrix)
@@ -401,13 +405,41 @@ def diagonalize(matrix):
 
     """
 
+def col_space(matrix):
+    A = [row[:] for row in matrix]
+    A1 = rref(A)
+    num_cols = len(A1[0])
+    num_rows = len(A1)
 
+    pivot_cols = []
+    for row in A1:
+        for j in range(num_cols):
+            if abs(row[j]) > 1e-10:
+                pivot_cols.append(j)
+                break
+    
+    basis = []
+    for col_index in pivot_cols:
+        col = [A[i][col_index] for i in range(num_rows)]
+        basis.append(col)
+    
+    return transpose(basis)
 
+def row_space(matrix):
+    A = [row[:] for row in matrix]
+    A1 = rref(A)
 
+    basis = []
+    for row in A1:
+        if any(abs(x) > 1e-10 for x in row):
+            basis.append(row)
+    
+    return transpose(basis)
 
+def change_of_basis(old_basis, new_basis):
+    new_inv = inverse(new_basis)
 
-
-
+    return matrix_mult(new_inv, old_basis)
 
 
 
@@ -595,5 +627,28 @@ def diagonalize_printer():
     for row in P_inv:
         print([round(x, 6) for x in row])
 
+def col_space_printer():
+    matrix = get_matrix()
+    basis = col_space(matrix)
+
+    for row in basis:
+        print([round(x, 6) for x in row])
+
+def row_space_printer():
+    matrix = get_matrix()
+    basis = row_space(matrix)
+
+    for row in basis:
+        print([round(x, 6) for x in row])
+
+def change_of_basis_printer():
+    old = get_matrix()
+    new = get_matrix()
+
+    P = change_of_basis(old, new)
+
+    for row in P:
+        print([round(x, 6) for x in row])
+
 if __name__ == "__main__":
-    diagonalize_printer()
+    change_of_basis_printer()
