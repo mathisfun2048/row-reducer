@@ -57,16 +57,19 @@ def lu(matrix):
     num_cols = len(matrix[0])
     if num_rows != num_cols:
         raise ValueError("matrix must be square")
-    
+
     L = [[0.0] * num_cols for _ in range (num_rows)]
     U = [[0.0] * num_cols for _ in range(num_rows) ]
 
     for i in range(num_rows):
 
         for j in range(i, num_rows):
-        
+
             sum_val = sum(L[i][k] * U[k][j] for k in range(i))
             U[i][j] = A[i][j] - sum_val
+
+        if abs(U[i][i]) < 1e-10:
+            raise ValueError("Matrix requires pivoting for LU decomposition (zero pivot encountered)")
 
         for j in range(i, num_rows):
             if i == j:
@@ -116,19 +119,27 @@ def inverse(matrix):
     augment = [matrix[i][:] + [1 if i == j else 0 for j in range(num_rows)] for i in range(num_rows)]
 
     for i in range(num_rows):
+        pivot_row = i
+        for k in range(i + 1, num_rows):
+            if abs(augment[k][i]) > abs(augment[pivot_row][i]):
+                pivot_row = k
+
+        if pivot_row != i:
+            augment[i], augment[pivot_row] = augment[pivot_row], augment[i]
+
         pivot = augment[i][i]
         if abs(pivot) < 1e-10:
-            raise ValueError("matrix is signular")
-        
+            raise ValueError("matrix is singular")
+
         for j in range(2 * num_rows):
             augment[i][j] /= pivot
-        
+
         for k in range(num_rows):
             if k != i:
                 factor = augment[k][i]
                 for j in range (2 * num_rows):
                     augment[k][j] -= factor * augment [i][j]
-    
+
     return [[augment[i][j] for j in range(num_rows, 2 * num_rows)] for i in range(num_rows)]
 
 def det(matrix):
@@ -138,14 +149,23 @@ def det(matrix):
     det = 1.0
 
     for i in range(num_rows):
+        pivot_row = i
+        for k in range(i + 1, num_rows):
+            if abs(A[k][i]) > abs(A[pivot_row][i]):
+                pivot_row = k
+
+        if pivot_row != i:
+            A[i], A[pivot_row] = A[pivot_row], A[i]
+            det *= -1
+
         if abs(A[i][i]) < 1e-10:
             return 0.0
-        
+
         for j in range(i + 1, num_rows):
             factor = A[j][i] / A[i][i]
             for k in range(i, num_rows):
                 A[j][k] -= factor * A[i][k]
-        
+
         det *= A[i][i]
 
     return det
@@ -651,4 +671,4 @@ def change_of_basis_printer():
         print([round(x, 6) for x in row])
 
 if __name__ == "__main__":
-    change_of_basis_printer()
+    det_printer()
