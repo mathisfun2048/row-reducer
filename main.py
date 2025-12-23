@@ -14,6 +14,11 @@ def get_matrix():
         
     return matrix
 
+def get_vector():
+    print("Enter the values in the vector")
+    v = list(map(float, input(f"Vector: ").split()))
+    return v
+
 def rref(matrix):
     A = [row[:] for row in matrix]
     num_rows = len(A)
@@ -73,9 +78,11 @@ def lu(matrix):
 
     return L, U
 
+# takes in 2 vectors as col vectors
 def dot_product(v1, v2):
     return sum(a*b for a, b in zip(v1, v2))
 
+# takes in 1 vector as a row vector
 def magnitude(v):
     return sum(x**2 for x in v) ** 0.5
 
@@ -296,23 +303,45 @@ def qr_printer():
         print([round(x, 6) for x in row])
 
 def dot_product_printer():
-    matrix = get_matrix()
-
-    num_rows = len(matrix)
-    num_cols = len(matrix[0])
-
-
-    if num_cols != 2:
-        raise ValueError("not 2 col vectors")
-
-    vectors = list(zip(*matrix))
-
-    v1, v2 = vectors[0], vectors[1]
+    
+    print("You will enter 2 vectors")
+    print("vector 1")
+    v1 = get_vector()
+    print("vector 2")
+    v2 = get_vector()
 
     product = dot_product(v1, v2)
 
+    
+    
+    
+
     print(f"the dot product of {v1} and {v2} is {product}")
 
+def magnitude_printer():
+
+    v = get_vector()
+
+    print(f"the magnitude of {v} is {magnitude(v)}")
+
+def inverse_printer():
+    matrix = get_matrix()
+
+    inv = inverse(matrix)
+
+    for row in inv:
+        print([round(x, 6) for x in row])
+
+def det_printer():
+    matrix = get_matrix()
+
+    determinant = det(matrix)
+
+    print(f"the determinant is {determinant}")
+
+def matrix_times_vector_printer():
+    v = get_vector()
+    print(v)
 """
 def diagonal_printer():
     matrix = get_matrix()
@@ -342,4 +371,4 @@ def diagonal_printer():
 
 
 if __name__ == "__main__":
-   dot_product_printer()
+   magnitude_printer()
