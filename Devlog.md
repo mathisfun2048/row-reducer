@@ -36,3 +36,9 @@ Finished implementing 10 functions, and am working on more
 Implemented some more functions:
 
 <img width="260" height="216" alt="Screenshot 2025-12-23 at 3 13 47 AM" src="https://github.com/user-attachments/assets/93e7b336-3ae3-49b2-a7ef-e893d9f43e5f" />
+
+## Hour 7
+
+Was able to finally implement eigenvalues and eigenvectors! Next step is to implement that into diagonalization, and then repeated matrix exponentiation!
+<img width="698" height="46" alt="Screenshot 2025-12-23 at 4 46 12 AM" src="https://github.com/user-attachments/assets/bfdeca16-c2a1-4fc9-8160-bca3581cfca5" />
+
