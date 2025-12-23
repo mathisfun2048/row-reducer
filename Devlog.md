@@ -19,3 +19,7 @@ QR Factorization:
 
 LU Factorization:
 <img width="249" height="210" alt="Screenshot 2025-12-22 at 6 29 32 PM" src="https://github.com/user-attachments/assets/54376c49-0f95-4f83-b47d-d9762c5642c0" />
+
+## Hour 3
+
+Wrote all the methods for diagonalization, now time to test and write printer functions!
