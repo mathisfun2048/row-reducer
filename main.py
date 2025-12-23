@@ -1,3 +1,40 @@
+# Input Validation Helpers
+
+def validate_matrix(matrix, name="matrix"):
+    
+    if not matrix:
+        raise ValueError(f"Invalid input: {name} cannot be empty")
+    if not isinstance(matrix, list):
+        raise ValueError(f"Invalid input: {name} must be a list")
+    if not matrix[0]:
+        raise ValueError(f"Invalid input: {name} cannot have empty rows")
+
+    num_cols = len(matrix[0])
+    for i, row in enumerate(matrix):
+        if not isinstance(row, list):
+            raise ValueError(f"Invalid input: {name} row {i} must be a list")
+        if len(row) != num_cols:
+            raise ValueError(f"Invalid input: {name} must have consistent row lengths")
+
+    return len(matrix), num_cols
+
+def validate_square_matrix(matrix, name="matrix"):
+    
+    num_rows, num_cols = validate_matrix(matrix, name)
+    if num_rows != num_cols:
+        raise ValueError(f"Invalid input: {name} must be square")
+    return num_rows
+
+def validate_vector(vector, name="vector"):
+    
+    if not vector:
+        raise ValueError(f"Invalid input: {name} cannot be empty")
+    if not isinstance(vector, list):
+        raise ValueError(f"Invalid input: {name} must be a list")
+    return len(vector)
+
+# functions
+
 def get_matrix():
     print("Enter The following numbers: ")
     num_rows = int(input("number of rows: "))
@@ -8,9 +45,9 @@ def get_matrix():
     for _ in range(num_rows):
         r = list(map(float, input(f"Row {_+1}: ").split()))
         if len(r) != num_cols:
-            raise ValueError(f"inccorect number of values, each row needs to have {num_cols} numbers")
+            raise ValueError(f"incorrect number of values, each row needs to have {num_cols} numbers")
         matrix.append(r)
-        
+
     return matrix
 
 def get_vector():
@@ -19,9 +56,8 @@ def get_vector():
     return v
 
 def rref(matrix):
+    num_rows, num_cols = validate_matrix(matrix)
     A = [row[:] for row in matrix]
-    num_rows = len(A)
-    num_cols = len(A[0])
 
     current_row = 0
 
@@ -52,11 +88,9 @@ def rref(matrix):
     return A
 
 def lu(matrix):
+    num_rows = validate_square_matrix(matrix)
     A = [row[:] for row in matrix]
-    num_rows = len(matrix)
-    num_cols = len(matrix[0])
-    if num_rows != num_cols:
-        raise ValueError("matrix must be square")
+    num_cols = num_rows
 
     L = [[0.0] * num_cols for _ in range (num_rows)]
     U = [[0.0] * num_cols for _ in range(num_rows) ]
@@ -81,15 +115,19 @@ def lu(matrix):
     return L, U
 
 def dot_product(v1, v2):
+    len1 = validate_vector(v1, "vector 1")
+    len2 = validate_vector(v2, "vector 2")
+    if len1 != len2:
+        raise ValueError(f"Invalid input: vectors must have same length (got {len1} and {len2})")
     return sum(a*b for a, b in zip(v1, v2))
 
 def magnitude(v):
+    validate_vector(v)
     return sum(x**2 for x in v) ** 0.5
 
 def qr(matrix):
+    num_rows, num_cols = validate_matrix(matrix)
     A = [row[:] for row in matrix]
-    num_rows = len(A)
-    num_cols = len(A[0])
     
     A_T = [[A[i][j] for i in range(num_rows)] for j in range(num_cols)]
     Q_T = []
@@ -113,8 +151,7 @@ def qr(matrix):
     return Q, R
 
 def inverse(matrix):
-    A = [row[:] for row in matrix]
-    num_rows = len(A)
+    num_rows = validate_square_matrix(matrix)
 
     augment = [matrix[i][:] + [1 if i == j else 0 for j in range(num_rows)] for i in range(num_rows)]
 
@@ -143,8 +180,8 @@ def inverse(matrix):
     return [[augment[i][j] for j in range(num_rows, 2 * num_rows)] for i in range(num_rows)]
 
 def det(matrix):
+    num_rows = validate_square_matrix(matrix)
     A = [row[:] for row in matrix]
-    num_rows = len(A)
 
     det = 1.0
 
@@ -171,21 +208,23 @@ def det(matrix):
     return det
 
 def matrix_times_vector(A, v):
-    num_rows = len(A)
+    num_rows, num_cols = validate_matrix(A, "matrix")
+    vec_len = validate_vector(v, "vector")
+    if num_cols != vec_len:
+        raise ValueError(f"Invalid input: matrix columns ({num_cols}) must match vector length ({vec_len})")
+
     product = []
     for _ in range(num_rows):
         product.append(dot_product(A[_], v))
-    
+
     return product
 
 def matrix_mult(A, B):
-    num_rows_A = len(A)
-    num_cols_A = len(A[0])
-    num_rows_B = len(B)
-    num_cols_B = len(B[0])
+    num_rows_A, num_cols_A = validate_matrix(A, "matrix A")
+    num_rows_B, num_cols_B = validate_matrix(B, "matrix B")
 
-    if(num_cols_A != num_rows_B):
-        raise ValueError("matricies not multiplicable")
+    if num_cols_A != num_rows_B:
+        raise ValueError(f"Invalid input: matrices not multiplicable (A columns: {num_cols_A}, B rows: {num_rows_B})")
     
     product = [[0.0]* num_cols_B for _ in range(num_rows_A)]
 
@@ -196,7 +235,11 @@ def matrix_mult(A, B):
     return product
 
 def solve_system(A, b):
-    
+    num_rows = validate_square_matrix(A, "matrix")
+    vec_len = validate_vector(b, "vector")
+    if num_rows != vec_len:
+        raise ValueError(f"Invalid input: matrix size ({num_rows}x{num_rows}) must match vector length ({vec_len})")
+
     A_inv = inverse(A)
 
     x = matrix_times_vector(A_inv, b)
@@ -220,9 +263,8 @@ def solve_system(A, b):
     """
     
 def transpose(matrix):
+    num_rows, num_cols = validate_matrix(matrix)
     A = [row[:] for row in matrix]
-    num_rows = len(A)
-    num_cols = len(A[0])
 
     trans = [[0.0] * num_rows for _ in range(num_cols)]
 
@@ -233,41 +275,40 @@ def transpose(matrix):
     return trans
 
 def trace(matrix):
+    num_rows = validate_square_matrix(matrix)
     A = [row[:] for row in matrix]
-    num_rows = len(A)
-    num_cols = len(A[0])
 
-    if num_rows != num_cols:
-        raise ValueError("matrix must be square")
-    
-    sum = 0
+    total = 0
     for i in range(num_rows):
-        sum += A[i][i]
-    
-    return sum
+        total += A[i][i]
+
+    return total
         
 def rank(matrix):
+    validate_matrix(matrix)
     A = [row[:] for row in matrix]
     A1 = rref(A)
 
-    rank = 0
+    r = 0
     for row in A1:
         if any(abs(x) > 1e-10 for x in row):
-            rank += 1
-    return rank
+            r += 1
+    return r
     
 def null(matrix):
-    num_cols = len(matrix[0])
+    _, num_cols = validate_matrix(matrix)
     r = rank(matrix)
-    
+
     nul = num_cols - r
 
     return nul
 
 def cross(v1, v2):
-    
-    if len(v1) != 3 or len(v2) != 3:
-        raise ValueError("vectors must be 3-tuples")
+    len1 = validate_vector(v1, "vector 1")
+    len2 = validate_vector(v2, "vector 2")
+
+    if len1 != 3 or len2 != 3:
+        raise ValueError(f"Invalid input: vectors must be 3-dimensional (got {len1} and {len2})")
     
 
     m1 = [[v1[0], v1[1]], [v2[0], v2[1]]]
@@ -279,23 +320,26 @@ def cross(v1, v2):
     return c
 
 def projection(a, v):
+    validate_vector(a, "vector a")
+    validate_vector(v, "vector v")
 
-    scale = dot_product(a, v) / dot_product(v, v)
+    v_dot_v = dot_product(v, v)
+    if abs(v_dot_v) < 1e-10:
+        raise ValueError("Invalid input: cannot project onto zero vector")
+
+    scale = dot_product(a, v) / v_dot_v
     proj = [num * scale for num in v]
 
     return proj
 
 def lin_ind(matrix):
-    num_cols = len(matrix[0])
+    _, num_cols = validate_matrix(matrix)
     r = rank(matrix)
 
-    if(r == num_cols):
-        return True
-    else:
-        return False
+    return r == num_cols
 
 def eigenvalues(matrix, max_iter = 1000, tol = 1e-10):
-    
+    validate_square_matrix(matrix)
     A = [row[:] for row in matrix]
 
     for _ in range(max_iter):
@@ -312,9 +356,8 @@ def eigenvalues(matrix, max_iter = 1000, tol = 1e-10):
     return [A[i][i] for i in range(len(A))]
 
 def null_space(matrix):
+    _, num_cols = validate_matrix(matrix)
     A = rref(matrix)
-    # print("RREF:", A)
-    num_cols = len(A[0])
 
     pivot_cols = []
     for row in A:
@@ -337,27 +380,20 @@ def null_space(matrix):
             v[pivot_col] = -A[i][free_col]
 
         basis.append(v)
-    
+
     return basis if basis else [[0.0] * num_cols]
 
 def eigenvector(matrix, eigenvalue):
-    # print("eigenvector called")
-    num_rows = len(matrix)
+    num_rows = validate_square_matrix(matrix)
     A_shifted = [row[:] for row in matrix]
 
     for i in range(num_rows):
         A_shifted[i][i] -= eigenvalue
-    
-    # print("A - λI:", A_shifted)
-    
-    """
-    basis = null_space(A_shifted)
-    return basis[0] if basis else [0.0] * n
-    """
 
     return null_space(A_shifted)
 
 def eigenvectors(matrix):
+    validate_square_matrix(matrix)
     eigenvals = eigenvalues(matrix)
     result = []
     for lam in eigenvals:
@@ -366,8 +402,8 @@ def eigenvectors(matrix):
     return result
 
 def diagonalize(matrix):
+    num_rows = validate_square_matrix(matrix)
     A = [row[:] for row in matrix]
-    num_rows = len(A)
 
     values = eigenvectors(A)
     print("Eigenvectors output:", values)
@@ -426,10 +462,9 @@ def diagonalize(matrix):
     """
 
 def col_space(matrix):
+    num_rows, num_cols = validate_matrix(matrix)
     A = [row[:] for row in matrix]
     A1 = rref(A)
-    num_cols = len(A1[0])
-    num_rows = len(A1)
 
     pivot_cols = []
     for row in A1:
@@ -437,15 +472,16 @@ def col_space(matrix):
             if abs(row[j]) > 1e-10:
                 pivot_cols.append(j)
                 break
-    
+
     basis = []
     for col_index in pivot_cols:
         col = [A[i][col_index] for i in range(num_rows)]
         basis.append(col)
-    
-    return transpose(basis)
+
+    return basis
 
 def row_space(matrix):
+    validate_matrix(matrix)
     A = [row[:] for row in matrix]
     A1 = rref(A)
 
@@ -453,16 +489,18 @@ def row_space(matrix):
     for row in A1:
         if any(abs(x) > 1e-10 for x in row):
             basis.append(row)
-    
-    return transpose(basis)
+
+    return basis
 
 def change_of_basis(old_basis, new_basis):
+    validate_square_matrix(old_basis, "old_basis")
+    validate_square_matrix(new_basis, "new_basis")
+
     new_inv = inverse(new_basis)
 
     return matrix_mult(new_inv, old_basis)
 
-
-
+# tester functions
 
 def rref_printer():
     matrix = get_matrix()
