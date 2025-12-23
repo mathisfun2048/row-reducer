@@ -265,11 +265,81 @@ def projection(a, v):
 
     return proj
 
+def lin_ind(matrix):
+    num_cols = len(matrix[0])
+    r = rank(matrix)
 
+    if(r == num_cols):
+        return True
+    else:
+        return False
 
+def eigenvalues(matrix, max_iter = 1000, tol = 1e-10):
+    
+    A = [row[:] for row in matrix]
 
+    for _ in range(max_iter):
+        Q, R = qr(A)
+        A1 = matrix_mult(R, Q)
 
+        converged = all(abs(A1[i][i] - A[i][i]) < tol for i in range(len(A)))
 
+        if converged:
+            return [A1[i][i] for i in range(len(A))]
+        
+        A = A1
+
+    return [A[i][i] for i in range(len(A))]
+
+def null_space(matrix):
+    A = rref(matrix)
+    # print("RREF:", A)
+    num_cols = len(A[0])
+
+    pivot_cols = []
+    for row in A:
+        for j in range(num_cols):
+            if abs(row[j]) > 1e-10:
+                pivot_cols.append(j)
+                break
+    # print("Pivot cols:", pivot_cols)
+    free_cols = [j for j in range(num_cols) if j not in pivot_cols]
+    # print("Free cols:", free_cols)
+    if not free_cols:
+        return [[0.0] * num_cols]
+
+    basis = []
+    for free_col in free_cols:
+        v = [0.0] * num_cols
+        v[free_col] = 1.0
+
+        for i, pivot_col in enumerate(pivot_cols):
+            v[pivot_col] = -A[i][free_col]
+
+        basis.append(v)
+    
+    return basis if basis else [[0.0] * num_cols]
+
+def eigenvector(matrix, eigenvalue):
+    # print("eigenvector called")
+    num_rows = len(matrix)
+    A_shifted = [row[:] for row in matrix]
+
+    for i in range(num_rows):
+        A_shifted[i][i] -= eigenvalue
+    
+    # print("A - λI:", A_shifted)
+    
+    basis = null_space(A_shifted)
+    return basis[0] if basis else [0.0] * n
+
+def eigenvectors(matrix):
+    eigenvals = eigenvalues(matrix)
+    result = []
+    for lam in eigenvals:
+        v = eigenvector(matrix, lam)
+        result.append((lam, v))
+    return result
     
 def rref_printer():
     matrix = get_matrix()
@@ -405,5 +475,37 @@ def projection_printer():
 
     print(p)
 
+def lin_ind_printer():
+    matrix = get_matrix()
+    l = lin_ind(matrix)
+    print(l)
+
+def eigenvalues_printer():
+    m = get_matrix()
+
+    e = eigenvalues(m)
+    print(e)
+
+def null_space_printer():
+    matrix = get_matrix()
+    b = null_space(matrix)
+
+    for row in b:
+        print([round(x, 6) for x in row])
+
+def eigenvector_printer():
+    matrix = get_matrix()
+    e = eigenvalues(matrix)
+    v = eigenvector(matrix, e[0])
+    print(v)
+
+def eigenvectors_printer():
+    matrix = get_matrix()
+
+    result = eigenvectors(matrix)
+
+    print(result)
+
+
 if __name__ == "__main__":
-    projection_printer()
+    eigenvectors_printer()
