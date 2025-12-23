@@ -30,3 +30,9 @@ Wrote all the methods for diagonalization, now time to test and write printer fu
 Finished implementing 10 functions, and am working on more
 
 !<img width="474" height="842" alt="Screenshot 2025-12-23 at 12 33 17 AM" src="https://github.com/user-attachments/assets/631a9923-a9d6-4567-8ec3-5d26ba85b9dd" />
+
+## Hour 6
+
+Implemented some more functions:
+
+<img width="260" height="216" alt="Screenshot 2025-12-23 at 3 13 47 AM" src="https://github.com/user-attachments/assets/93e7b336-3ae3-49b2-a7ef-e893d9f43e5f" />
