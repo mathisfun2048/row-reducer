@@ -340,7 +340,78 @@ def eigenvectors(matrix):
         v = eigenvector(matrix, lam)
         result.append((lam, v))
     return result
+
+def diagonalize(matrix):
+    A = [row[:] for row in matrix]
+    num_rows = len(A)
+
+    values = eigenvectors(A)
+    print("Eigenvectors output:", values)
+
+    P_cols = []
+    D_vals = []
+
+    for eigenvalue, basis in values:
+        for v in basis:
+            P_cols.append(v)
+            D_vals.append(eigenvalue)
+
+    if len(P_cols) != num_rows:
+        raise ValueError("Matrix is not diagonalizable")
     
+    P = transpose(P_cols)
+
+    D = [[0.0] * num_rows for _ in range(num_rows)]
+    
+    for i in range(num_rows):
+        D[i][i] = D_vals[i]
+    
+    P_inv = inverse(P)
+
+    return P, D, P_inv
+
+    
+    
+    
+    
+    
+    """
+    values = eigenvectors(A)
+
+    eigenvectors_T = []
+    eigenvalues = []
+    multiplicity = []
+
+    for eigenvalue in values:
+        eigenvalues.append(eigenvalue[0])
+        m = -1
+        for eigenvector in eigenvalue[1]:
+            m += 1
+            eigenvectors_T.append(eigenvector)
+        multiplicity.append(m)
+
+    num_eigenvalues = len(eigenvalues)
+    num_eigenvectors = len(eigenvectors_T)
+
+    P = transpose(eigenvectors_T)
+    D = [[0.0] * num_eigenvectors for _ in range(num_eigenvectors)]
+
+    for i in range(num_eigenvalues):
+        for j in range()
+
+    """
+
+
+
+
+
+
+
+
+
+
+
+
 def rref_printer():
     matrix = get_matrix()
     result = rref(matrix)
@@ -506,6 +577,23 @@ def eigenvectors_printer():
 
     print(result)
 
+def diagonalize_printer():
+    matrix = get_matrix()
+
+    P, D, P_inv = diagonalize(matrix)
+
+    for row in P:
+        print([round(x, 6) for x in row])
+
+    print("\n")
+
+    for row in D:
+        print([round(x, 6) for x in row])
+
+    print("\n")
+
+    for row in P_inv:
+        print([round(x, 6) for x in row])
 
 if __name__ == "__main__":
-    eigenvectors_printer()
+    diagonalize_printer()
