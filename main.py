@@ -1,4 +1,3 @@
-
 def get_matrix():
     print("Enter The following numbers: ")
     num_rows = int(input("number of rows: "))
@@ -200,89 +199,78 @@ def solve_system(A, b):
     return x
     """
     
-
-"""
-def find_eigenvector(matrix, eigenvalue, tol=1e-10):
-    num_rows = len(matrix)
-    
-    # Form (A - λI)
-    A = [row[:] for row in matrix]
-    for i in range(num_rows):
-        A[i][i] -= eigenvalue
-    
-    # Use your existing rref function
-    A = rref(A)
-    
-    # Find free variable (first column without leading 1)
-    pivot_cols = []
-    for i in range(num_rows):
-        for j in range(num_rows):
-            if abs(A[i][j]) > tol:
-                pivot_cols.append(j)
-                break
-    
-    free_var = next((j for j in range(num_rows) if j not in pivot_cols), num_rows - 1)
-    
-    # Build eigenvector
-    v = [0.0] * num_rows
-    v[free_var] = 1.0
-    
-    # Back-substitute (now works because RREF has zeros above pivots)
-    for i in range(len(pivot_cols) - 1, -1, -1):
-        col = pivot_cols[i]
-        v[col] = -sum(A[i][j] * v[j] for j in range(col + 1, num_rows))
-    
-    norm = magnitude(v)
-    return [x / norm for x in v] if norm > tol else v
-
-def qr_algorithm(matrix, max_iter = 1000, tol = 1e-10):
+def transpose(matrix):
     A = [row[:] for row in matrix]
     num_rows = len(A)
+    num_cols = len(A[0])
 
-    for _ in range(max_iter):
-        Q, R = qr(A)
-        A_new = matrix_mult(R, Q)
+    trans = [[0.0] * num_rows for _ in range(num_cols)]
 
-        converged = True
-        for i in range(num_rows):
-            for j in range(num_rows):
-                if i != j and abs(A_new[i][j]) > tol:
-                    converged = False
+    for i in range(num_rows):
+        for j in range(num_cols):
+            trans[j][i] = A[i][j]
+
+    return trans
+
+def trace(matrix):
+    A = [row[:] for row in matrix]
+    num_rows = len(A)
+    num_cols = len(A[0])
+
+    if num_rows != num_cols:
+        raise ValueError("matrix must be square")
+    
+    sum = 0
+    for i in range(num_rows):
+        sum += A[i][i]
+    
+    return sum
         
-        if converged:
-            break
-        A = A_new
-
-    return [A[i][i] for i in range(num_rows)]
-
-def diagonalize(matrix):
-
+def rank(matrix):
     A = [row[:] for row in matrix]
-    num_rows = len(A)
+    A1 = rref(A)
 
-    eigenvalues = qr_algorithm(A)
-
-    eigenvectors = []
-
-    for lam in eigenvalues:
-        v = find_eigenvector(A, lam)
-        eigenvectors.append(v)
+    rank = 0
+    for row in A1:
+        if any(abs(x) > 1e-10 for x in row):
+            rank += 1
+    return rank
     
-    P = [[eigenvectors[j][i] for j in range(num_rows)] for i in range(num_rows)]
-
-    if abs(det(P)) < 1e-10:
-        raise ValueError("matrix not diagonalizable :p")
+def null(matrix):
+    num_cols = len(matrix[0])
+    r = rank(matrix)
     
-    D = [[0.0] * num_rows for _ in range(num_rows)]
-    for i in range(num_rows):
-        D[i][i] = eigenvalues[i]
+    nul = num_cols - r
+
+    return nul
+
+def cross(v1, v2):
     
-    P_inv = inverse(P)
+    if len(v1) != 3 or len(v2) != 3:
+        raise ValueError("vectors must be 3-tuples")
+    
 
-    return P, D, P_inv
-"""
+    m1 = [[v1[0], v1[1]], [v2[0], v2[1]]]
+    m2 = [[v1[0], v1[2]], [v2[0], v2[2]]]
+    m3 = [[v1[1], v1[2]], [v2[1], v2[2]]]
+
+    c = [det(m3), -det(m2), det(m1)]
+
+    return c
+
+def projection(a, v):
+
+    scale = dot_product(a, v) / dot_product(v, v)
+    proj = [num * scale for num in v]
+
+    return proj
 
 
+
+
+
+
+    
 def rref_printer():
     matrix = get_matrix()
     result = rref(matrix)
@@ -301,18 +289,6 @@ def lu_printer():
 
     print("U: ")
     for row in U:
-        print([round(x, 6) for x in row])
-
-def qr_printer():
-    matrix = get_matrix()
-    Q, R = qr(matrix)
-
-    print("Q: ")
-    for row in Q:
-        print([round(x, 6) for x in row])
-
-    print("R: ")
-    for row in R:
         print([round(x, 6) for x in row])
 
 def dot_product_printer():
@@ -337,6 +313,18 @@ def magnitude_printer():
 
     print(f"the magnitude of {v} is {magnitude(v)}")
 
+def qr_printer():
+    matrix = get_matrix()
+    Q, R = qr(matrix)
+
+    print("Q: ")
+    for row in Q:
+        print([round(x, 6) for x in row])
+
+    print("R: ")
+    for row in R:
+        print([round(x, 6) for x in row])
+
 def inverse_printer():
     matrix = get_matrix()
 
@@ -359,32 +347,7 @@ def matrix_times_vector_printer():
     product = matrix_times_vector(matrix, v)
 
     print(product)
-"""
-def diagonal_printer():
-    matrix = get_matrix()
-    P, D, P_inv = diagonalize(matrix)
 
-    print("P: ")
-    for row in P:
-        print([round(x, 6) for x in row])
-
-    print("D: ")
-    for row in D:
-        print([round(x, 6) for x in row])
-
-    print("P_inv: ")
-    for row in P_inv:
-        print([round(x, 6) for x in row])
-
-    
-
-    print("/n")
-    print("/n")
-
-    test = matrix_mult( matrix_mult(P, D), P_inv)
-    for row in test:
-        print([round(x, 6) for x in row])
-"""
 def matrix_mult_printer():
     print("You will input 2 matricies")
     m1 = get_matrix()
@@ -404,6 +367,43 @@ def solve_system_printer():
     x = solve_system(m, v)
 
     print(x)
-if __name__ == "__main__":
-   solve_system_printer()
 
+def trans_printer():
+    matrix = get_matrix()
+    trans = transpose(matrix)
+    
+    for row in trans:
+        print([round(x, 6) for x in row])
+
+def trace_printer():
+    matrix = get_matrix()
+    print(trace(matrix))
+
+def rank_printer():
+    matrix = get_matrix()
+    r = rank(matrix)
+    print(r)
+
+def nul_printer():
+    matrix = get_matrix()
+    n = null(matrix)
+    print(n)
+
+def cross_printer():
+    v1 = get_vector()
+    v2 = get_vector()
+
+    c = cross(v1, v2)
+
+    print(c)
+
+def projection_printer():
+    a = get_vector()
+    v = get_vector()
+
+    p = projection(a, v)
+
+    print(p)
+
+if __name__ == "__main__":
+    projection_printer()
