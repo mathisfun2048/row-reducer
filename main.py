@@ -500,7 +500,7 @@ def change_of_basis(old_basis, new_basis):
 
     return matrix_mult(new_inv, old_basis)
 
-# tester functions
+# CLI tester functions
 
 def rref_printer():
     matrix = get_matrix()
