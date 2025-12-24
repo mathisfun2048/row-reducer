@@ -8,8 +8,8 @@ function Output({ type, content }) {
 
     // Match function names like: det(, rref(, trace(
     const functionRegex = /\b([a-z_][a-z0-9_]*)\s*\(/g;
-    // Match variable names (single capital letters or lowercase single letters not followed by parenthesis)
-    const variableRegex = /\b([A-Z][a-z0-9_]*|[a-z])(?!\s*\()/g;
+    // Match variable names (capital letters and multi-char lowercase variable names, not followed by parenthesis)
+    const variableRegex = /\b([A-Z][a-z0-9_]*)(?!\s*\()/g;
 
     // Collect all matches with their positions and types
     const matches = [];

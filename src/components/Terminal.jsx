@@ -14,7 +14,14 @@ function Terminal({ runPython }) {
 
   useEffect(() => {
     if (terminalContentRef.current) {
-      terminalContentRef.current.scrollTop = terminalContentRef.current.scrollHeight;
+      // Add a small delay to ensure DOM is fully rendered before scrolling
+      const timer = setTimeout(() => {
+        if (terminalContentRef.current) {
+          terminalContentRef.current.scrollTop = terminalContentRef.current.scrollHeight;
+        }
+      }, 10);
+
+      return () => clearTimeout(timer);
     }
   }, [history]);
 
