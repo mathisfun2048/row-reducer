@@ -1,0 +1,36 @@
+.input-form {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(21, 26, 35, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(230, 83, 105, 0.2);
+  transition: border-color 0.3s ease;
+}
+
+.input-form:focus-within {
+  border-color: rgba(230, 83, 105, 0.4);
+}
+
+.prompt {
+  color: #E65369;
+  font-weight: bold;
+  user-select: none;
+}
+
+.input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fbf6ed;
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: 18px;
+  outline: none;
+  caret-color: #E65369;
+}
+
+.input-field::selection {
+  background: rgba(230, 83, 105, 0.2);
+}

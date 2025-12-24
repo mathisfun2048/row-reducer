@@ -1,0 +1,51 @@
+.output-line {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.output-line pre {
+  margin: 0;
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: 18px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.input-line {
+  color: #fbf6ed;
+  margin-bottom: 0.5rem;
+}
+
+.input-line .prompt {
+  color: #E65369;
+}
+
+.output {
+  color: #fbf6ed;
+}
+
+.prompt-line {
+  color: #fbbf24;
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+.error {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  padding: 0.5rem;
+  border-radius: 4px;
+  border-left: 3px solid #ff6b6b;
+}

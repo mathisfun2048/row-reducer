@@ -1,0 +1,81 @@
+.terminal-wrapper {
+  width: min(1400px, 95vw);
+  max-width: 1400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.terminal-header {
+  text-align: center;
+  padding: 1rem;
+}
+
+.terminal-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #E65369;
+  margin-bottom: 0.25rem;
+}
+
+.terminal-subtitle {
+  font-size: 0.9rem;
+  color: rgba(230, 230, 230, 0.6);
+  font-style: italic;
+}
+
+.terminal {
+  height: min(800px, 85vh);
+  background: rgba(30, 36, 48, 0.95);
+  backdrop-filter: blur(10px);
+  color: #fbf6ed;
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: 18px;
+  padding: 2.5rem 3rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+              0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.terminal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 1rem;
+}
+
+.terminal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-content::-webkit-scrollbar-track {
+  background: rgba(21, 26, 35, 0.5);
+  border-radius: 4px;
+}
+
+.terminal-content::-webkit-scrollbar-thumb {
+  background: rgba(58, 69, 86, 0.8);
+  border-radius: 4px;
+}
+
+.terminal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 85, 102, 0.9);
+}
+
+/* Add smooth scrolling */
+.terminal-content {
+  scroll-behavior: smooth;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .terminal {
+    width: 95vw;
+    height: 90vh;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+}
