@@ -14,14 +14,14 @@ function Terminal({ runPython }) {
 
   useEffect(() => {
     if (terminalContentRef.current) {
-      // Add a small delay to ensure DOM is fully rendered before scrolling
-      const timer = setTimeout(() => {
-        if (terminalContentRef.current) {
-          terminalContentRef.current.scrollTop = terminalContentRef.current.scrollHeight;
-        }
-      }, 10);
-
-      return () => clearTimeout(timer);
+      // Use requestAnimationFrame twice to ensure DOM has fully updated
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (terminalContentRef.current) {
+            terminalContentRef.current.scrollTop = terminalContentRef.current.scrollHeight;
+          }
+        });
+      });
     }
   }, [history]);
 
