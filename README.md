@@ -1,16 +1,46 @@
-# React + Vite
+# Row Reducer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## What is this??
+A lot of linear algebra operations that are difficult (or impossible!) to enter into a calculator. This application aims to simplify this through providing 22 different matrix and vector functions accessible through a virtual CLI. The purpous is to help students check their work through a simplistic website.
 
-Currently, two official plugins are available:
+## What functions are avalible?
+Glad you asked. So far, we have the following functions: 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Scaler / Single Value Functions 
+det(A)
+trace(A)
+rank(A)
+null(A)
+magnitude(v)
+dot_product(v1, v2)
+lin_ind(A)
 
-## React Compiler
+### Matrix / Vector Functions
+rref(A)
+inverse(A)
+transpose(A)
+cross(v1, v2)
+projection(a, v)
+matrix_mult(A, B)
+solve_system(A, b)
+eigenvectors(A)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Basis Functions
+null_space(A)
+col_space(A)
+row_space(A)
+change_of_basis(old, new)
 
-## Expanding the ESLint configuration
+### Decomposition Functions
+lu(A)
+qr(A)
+diagonalize(A)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Cost?
+free ninety nine
+
+## How to use?
+Here's a vercel link!
+https://row-reducer.vercel.app/
+
+## Pictures
