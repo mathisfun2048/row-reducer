@@ -1,6 +1,72 @@
 import './Output.css';
 
 function Output({ type, content }) {
+  // Syntax highlighting for input lines
+  const highlightSyntax = (text) => {
+    const parts = [];
+    let lastIndex = 0;
+
+    // Match function names like: det(, rref(, trace(
+    const functionRegex = /\b([a-z_][a-z0-9_]*)\s*\(/g;
+    // Match variable names (single capital letters or lowercase single letters not followed by parenthesis)
+    const variableRegex = /\b([A-Z][a-z0-9_]*|[a-z])(?!\s*\()/g;
+
+    // Collect all matches with their positions and types
+    const matches = [];
+
+    let match;
+    while ((match = functionRegex.exec(text)) !== null) {
+      matches.push({
+        start: match.index,
+        end: match.index + match[1].length,
+        text: match[1],
+        type: 'function'
+      });
+    }
+
+    while ((match = variableRegex.exec(text)) !== null) {
+      // Check if this overlaps with a function match
+      const overlaps = matches.some(m =>
+        match.index >= m.start && match.index < m.end
+      );
+      if (!overlaps) {
+        matches.push({
+          start: match.index,
+          end: match.index + match[1].length,
+          text: match[1],
+          type: 'variable'
+        });
+      }
+    }
+
+    // Sort by position
+    matches.sort((a, b) => a.start - b.start);
+
+    // Build the highlighted output
+    matches.forEach((m, idx) => {
+      // Add text before this match
+      if (m.start > lastIndex) {
+        parts.push(text.substring(lastIndex, m.start));
+      }
+
+      // Add highlighted match
+      parts.push(
+        <span key={idx} className={`syntax-${m.type}`}>
+          {m.text}
+        </span>
+      );
+
+      lastIndex = m.end;
+    });
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : text;
+  };
+
   const formatMatrix = (matrix) => {
     if (!Array.isArray(matrix)) return String(matrix);
     
@@ -109,7 +175,15 @@ function Output({ type, content }) {
   if (type === 'input') {
     return (
       <div className="output-line input-line">
-        <span className="prompt">{'>>>'}</span> {content}
+        <span className="prompt">{'>>>'}</span> {highlightSyntax(content)}
+      </div>
+    );
+  }
+
+  if (type === 'prompt') {
+    return (
+      <div className="output-line prompt-line">
+        {content}
       </div>
     );
   }

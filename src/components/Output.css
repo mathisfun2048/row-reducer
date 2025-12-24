@@ -49,3 +49,12 @@
   border-radius: 4px;
   border-left: 3px solid #ff6b6b;
 }
+
+/* Syntax highlighting */
+.syntax-variable {
+  color: #F5CE56;
+}
+
+.syntax-function {
+  color: #E68053;
+}

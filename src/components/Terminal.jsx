@@ -10,11 +10,11 @@ function Terminal({ runPython }) {
   const [commandHistory, setCommandHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [promptState, setPromptState] = useState(null); // For interactive prompts
-  const terminalRef = useRef(null);
+  const terminalContentRef = useRef(null);
 
   useEffect(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    if (terminalContentRef.current) {
+      terminalContentRef.current.scrollTop = terminalContentRef.current.scrollHeight;
     }
   }, [history]);
 
@@ -368,11 +368,17 @@ function Terminal({ runPython }) {
   return (
     <div className="terminal-wrapper">
       <div className="terminal-header">
-        <div className="terminal-title">Linear Algebra Terminal</div>
-        <div className="terminal-subtitle">Type 'help' to get started</div>
+        <div className="terminal-header-left">
+          <div className="terminal-title">row reducer</div>
+          <div className="terminal-subtitle">Type 'help' to get started</div>
+        </div>
+        <div className="terminal-header-right">
+          <div>↑/↓ - Command history</div>
+          <div>Ctrl+L - Clear terminal</div>
+        </div>
       </div>
-      <div className="terminal" ref={terminalRef}>
-        <div className="terminal-content">
+      <div className="terminal">
+        <div className="terminal-content" ref={terminalContentRef}>
           {history.map((item, idx) => (
             <Output key={idx} type={item.type} content={item.content} />
           ))}

@@ -7,8 +7,16 @@
 }
 
 .terminal-header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem;
+}
+
+.terminal-header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .terminal-title {
@@ -19,9 +27,17 @@
 }
 
 .terminal-subtitle {
-  font-size: 0.9rem;
+  font-size: 20px;
   color: rgba(230, 230, 230, 0.6);
   font-style: italic;
+}
+
+.terminal-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 20px;
+  color: rgba(230, 230, 230, 0.6);
 }
 
 .terminal {
